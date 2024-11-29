@@ -1,0 +1,86 @@
+openapi: 3.0.1
+info:
+  contact:
+    email: tu.email@dominio.com
+    name: Edwar Jaimes
+  description: API para procesar texto con la lógica de los requerimientos definidos.
+  title: API de Procesamiento de Texto
+  version: 1.0.0
+servers:
+- description: Servidor local de desarrollo
+  url: http://localhost:8080
+paths:
+  /procesarTexto:
+    post:
+      description: "Recibe un texto con líneas de números y frases, procesa y devuelve\
+        \ las frases en minúsculas y con un booleano que indica si la cantidad de\
+        \ palabras coincide con el número dado."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_procesarTexto_post_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/_procesarTexto_post_200_response_inner'
+                type: array
+          description: Procesamiento exitoso del texto
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_procesarTexto_post_400_response'
+          description: Solicitud mal formada o con formato incorrecto
+      summary: Procesa el texto de entrada y devuelve el resultado formateado.
+      x-content-type: application/json
+      x-accepts: application/json
+components:
+  schemas:
+    TextInput:
+      properties:
+        inputText:
+          description: "El texto de entrada, con líneas de números y frases separadas\
+            \ por \"\\\""
+          type: string
+      type: object
+    TextOutput:
+      properties:
+        processedText:
+          description: La frase procesada
+          type: string
+        isWordCountMatch:
+          description: Indica si el número de palabras coincide con el número dado
+            en la entrada
+          type: boolean
+      type: object
+    _procesarTexto_post_request:
+      properties:
+        inputText:
+          description: "El texto de entrada, con líneas separadas por \"\\n\", donde\
+            \ cada línea tiene un número y una frase separados por \"\\\""
+          type: string
+      type: object
+    _procesarTexto_post_200_response_inner:
+      example:
+        isWordCountMatch: true
+        processedText: processedText
+      properties:
+        processedText:
+          description: La frase procesada con solo caracteres alfabéticos en minúsculas
+          type: string
+        isWordCountMatch:
+          description: "True si el número y las palabras coinciden, false si no"
+          type: boolean
+      type: object
+    _procesarTexto_post_400_response:
+      properties:
+        error:
+          description: Descripción del error
+          type: string
+      type: object
+
